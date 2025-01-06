@@ -4,7 +4,6 @@ import base64
 import httpx
 import tempfile
 from typing import Dict, List, Tuple, Optional
-import random
 import cv2
 import numpy as np
 from pathlib import Path
@@ -19,6 +18,7 @@ from validator.challenge.challenge_types import (
 )
 from validator.config import FRAMES_TO_VALIDATE
 from validator.evaluation.prompts import COUNT_PROMPT, VALIDATION_PROMPT
+import secrets
 
 logger = get_logger(__name__)
 
@@ -68,7 +68,7 @@ class GSRValidator:
         # Select random frames, ensuring they're not too close to start/end
         buffer = min(30, total_frames // 10)  # 10% or 30 frames buffer
         frame_range = range(buffer, total_frames - buffer)
-        frames = random.sample(frame_range, min(num_frames, len(frame_range)))
+        frames = secrets.SystemRandom().sample(frame_range, min(num_frames, len(frame_range)))
         frames.sort()  # Keep frames in order
         return frames
 
