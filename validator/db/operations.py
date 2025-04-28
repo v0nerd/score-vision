@@ -917,9 +917,9 @@ class DatabaseManager:
             for table, timestamp_column in tables_to_clean:
                 query = f"""
                 DELETE FROM {table}
-                WHERE {timestamp_column} < datetime('now', '-{days} days')
+                WHERE {timestamp_column} < datetime('now', ?)
                 """
-                cursor.execute(query)
+                cursor.execute(query, ('-{0} days'.format(days), ))
                 deleted_rows = cursor.rowcount
                 logger.info(f"Deleted {deleted_rows} rows from {table} older than {days} days")
             
