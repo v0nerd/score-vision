@@ -3,7 +3,6 @@ import json
 import os
 import sys
 import time
-import random
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional, List
@@ -17,6 +16,7 @@ from fiber.chain.interface import get_substrate
 from fiber.chain.chain_utils import load_hotkey_keypair, load_coldkeypub_keypair
 from loguru import logger
 from substrateinterface import Keypair
+import secrets
 
 # Add project root to Python path
 project_root = str(Path(__file__).resolve().parents[2])
@@ -204,7 +204,7 @@ async def get_available_nodes(
     # If we have more available nodes than MAX_MINERS, randomly select MAX_MINERS
     if len(available_nodes) > MAX_MINERS:
         logger.info(f"Found {len(available_nodes)} available nodes, selecting {MAX_MINERS} randomly")
-        available_nodes = random.sample(available_nodes, MAX_MINERS)
+        available_nodes = secrets.SystemRandom().sample(available_nodes, MAX_MINERS)
     
     return available_nodes
 

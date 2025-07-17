@@ -1,9 +1,9 @@
-import random
 from datetime import datetime, timedelta
 import pandas as pd
 import matplotlib.pyplot as plt
 from typing import Dict, List
 import numpy as np
+import secrets
 
 # Updated constants to match scoring_utils.py
 W_PREDICTION = 1.0
@@ -24,7 +24,7 @@ def simulate_miners(
     miner_skills = {}
     for i in range(num_miners):
         # Randomly assign miner type based on both_tasks_ratio
-        r = random.random()
+        r = secrets.SystemRandom().random()
         if r < both_tasks_ratio:
             task_types = {"prediction", "cv"}
         elif r < (1 + both_tasks_ratio) / 2:
@@ -34,10 +34,10 @@ def simulate_miners(
             
         miner_skills[f"miner_{i}"] = {
             # Even tighter ranges for more realistic distribution
-            "prediction_accuracy": random.uniform(0.5, 0.6),
+            "prediction_accuracy": secrets.SystemRandom().uniform(0.5, 0.6),
             "confidence_range": (0.2, 0.8),
-            "processing_speed": random.uniform(0.95, 1.0),
-            "cv_quality": random.uniform(0.85, 0.95),
+            "processing_speed": secrets.SystemRandom().uniform(0.95, 1.0),
+            "cv_quality": secrets.SystemRandom().uniform(0.85, 0.95),
             "task_types": task_types
         }
     
@@ -48,7 +48,7 @@ def simulate_miners(
     for task_idx in range(num_tasks):
         for miner_id, skills in miner_skills.items():
             # Determine task type
-            is_prediction = random.random() < prediction_ratio
+            is_prediction = secrets.SystemRandom().random() < prediction_ratio
             task_type = "prediction" if is_prediction else "cv"
             
             # Skip if miner doesn't do this type of task
@@ -57,8 +57,8 @@ def simulate_miners(
             
             if is_prediction:
                 # Simulate prediction task - increase base scores
-                is_correct = random.random() < skills["prediction_accuracy"]
-                confidence = random.uniform(*skills["confidence_range"])
+                is_correct = secrets.SystemRandom().random() < skills["prediction_accuracy"]
+                confidence = secrets.SystemRandom().uniform(*skills["confidence_range"])
                 processing_time = avg_prediction_time * (1/skills["processing_speed"])
                 
                 if is_correct:
@@ -72,7 +72,7 @@ def simulate_miners(
                 # Modified CV scoring to be more in line with predictions
                 completeness = skills["cv_quality"]
                 processing_time = avg_cv_time * (1/skills["processing_speed"])
-                time_factor = random.uniform(0.85, 1.0)
+                time_factor = secrets.SystemRandom().uniform(0.85, 1.0)
                 
                 # Adjusted CV scoring formula to match prediction score ranges
                 base_score = (0.8 * completeness + 0.2 * time_factor) * 0.8  # Scale down base score
